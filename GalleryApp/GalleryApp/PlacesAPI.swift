@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct Data:Codable {
+struct MainData:Codable {
     let title:String
     let rows:[Rows]
     
@@ -59,52 +59,62 @@ struct Rows:Codable {
 }
 
 class PlacesAPI{
-/*
-private func readLocalFile(forName name: String) -> Data? {
-    do {
-        if let bundlePath = Bundle.main.path(forResource: name,
-                                             ofType: "json"),
-            let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) {
-            return jsonData
+
+public func loadJson(fromURLString urlString: String,
+                      completion: @escaping (Result<Data, Error>) -> Void) {
+    if let url = URL(string: urlString) {
+        let urlSession = URLSession(configuration: .default).dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            }
+            
+            if let data = data {
+                
+                completion(.success(data))
+            }
         }
-    } catch {
-        print(error)
+        
+        urlSession.resume()
     }
-    
-    return nil
 }
 
-private func parse(jsonData: Data) {
+public func parse(jsonData: Data) -> (String, [Places]) {
     do {
-        let decodedData = try JSONDecoder().decode(PlacesData.self,from: jsonData)
+        let dataString = String(decoding: jsonData, as: UTF8.self)
+        let decodedData = try JSONDecoder().decode(MainData.self,from: dataString.data(using: .utf8)!)
         
-        print("Title: ", decodedData.title)
-        print("Description: ", decodedData.rows)
-        print("===================================")
+//        print("Title: ", decodedData.title)
+//        print("Description: ", decodedData.rows)
+//        print("===================================")
+        var resultData:[Places] = []
+        for x in decodedData.rows{
+            if let _ = x.placeName
+            {
+                resultData.append(Places(placeName: x.placeName, placeDescription: x.placeDescription, imageURL: x.imageURL))
+            }
+        }
+        return (decodedData.title, resultData )
     }
-//    catch {
-//        print("decode error")
-//        print(error)
+    catch {
+        print("decode error")
+        print(error)
+        return ("Error",[])
+    }
+//    catch let DecodingError.dataCorrupted(context) {
+//        print(context)
+//    } catch let DecodingError.keyNotFound(key, context) {
+//        print("Key '\(key)' not found:", context.debugDescription)
+//        print("codingPath:", context.codingPath)
+//    } catch let DecodingError.valueNotFound(value, context) {
+//        print("Value '\(value)' not found:", context.debugDescription)
+//        print("codingPath:", context.codingPath)
+//    } catch let DecodingError.typeMismatch(type, context)  {
+//        print("Type '\(type)' mismatch:", context.debugDescription)
+//        print("codingPath:", context.codingPath)
+//    } catch {
+//        print("error: ", error)
 //    }
-    catch let DecodingError.dataCorrupted(context) {
-        print(context)
-    } catch let DecodingError.keyNotFound(key, context) {
-        print("Key '\(key)' not found:", context.debugDescription)
-        print("codingPath:", context.codingPath)
-    } catch let DecodingError.valueNotFound(value, context) {
-        print("Value '\(value)' not found:", context.debugDescription)
-        print("codingPath:", context.codingPath)
-    } catch let DecodingError.typeMismatch(type, context)  {
-        print("Type '\(type)' mismatch:", context.debugDescription)
-        print("codingPath:", context.codingPath)
-    } catch {
-        print("error: ", error)
-    }
 }
-func getPlaces(){
-    if let localData = readLocalFile(forName: "facts") {
-        parse(jsonData: localData)
-    }
-}
-*/
+
+
 }

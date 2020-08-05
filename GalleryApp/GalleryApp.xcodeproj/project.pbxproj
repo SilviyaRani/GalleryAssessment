@@ -18,6 +18,7 @@
 		8464804624DA5487006D887B /* PlacesAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8464804524DA5487006D887B /* PlacesAPI.swift */; };
 		8464804824DA5837006D887B /* facts.json in Resources */ = {isa = PBXBuildFile; fileRef = 8464804724DA5837006D887B /* facts.json */; };
 		8464804A24DB040E006D887B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8464804924DB040E006D887B /* Constants.swift */; };
+		8464804C24DB2D82006D887B /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8464804B24DB2D82006D887B /* CustomTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		8464804524DA5487006D887B /* PlacesAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesAPI.swift; sourceTree = "<group>"; };
 		8464804724DA5837006D887B /* facts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = facts.json; sourceTree = "<group>"; };
 		8464804924DB040E006D887B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8464804B24DB2D82006D887B /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		9D21FF092731B089EE7B9E55 /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD013DE64A97C95E9A626BE3 /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -90,6 +92,7 @@
 				8464804524DA5487006D887B /* PlacesAPI.swift */,
 				8464804724DA5837006D887B /* facts.json */,
 				8464804924DB040E006D887B /* Constants.swift */,
+				8464804B24DB2D82006D887B /* CustomTableViewCell.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 			files = (
 				8464804424DA547A006D887B /* Places.swift in Sources */,
 				8464803724DA4F76006D887B /* GalleryApp.xcdatamodeld in Sources */,
+				8464804C24DB2D82006D887B /* CustomTableViewCell.swift in Sources */,
 				8464803124DA4F76006D887B /* ViewController.swift in Sources */,
 				8464802D24DA4F76006D887B /* AppDelegate.swift in Sources */,
 				8464804A24DB040E006D887B /* Constants.swift in Sources */,

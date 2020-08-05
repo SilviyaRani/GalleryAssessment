@@ -8,29 +8,26 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     let tableView = UITableView()
     var safeArea: UILayoutGuide!
-    let placesapi = PlacesAPI()
+    let apiInstance = PlacesAPI()
+    var placeList:[Places] = []
     
-    var characters = ["Link", "Zelda", "Ganondorf", "Midna"]
-    
-    override func loadView() {
-      super.loadView()
+     
+    override func viewDidLoad() {
+        super.viewDidLoad()
         view.backgroundColor = .white
         safeArea = view.layoutMarginsGuide
         setupTableView()
-        //placesapi.getPlaces()
-        getData()
     }
+    func setUpNavigation() {
+        navigationItem.title = "Navigation Bar"
+        self.navigationController?.navigationBar.barTintColor =  .red
+        self.navigationController?.navigationBar.isTranslucent = false
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
-
     func setupTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,19 +36,89 @@ class ViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "cell")
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        self.getPlaces()
       }
     
     
-    func getData(){
-      
+ 
+    func getPlaces(){
         
+
+        apiInstance.loadJson(fromURLString: Constants.dataURL) { (result) in
+            switch result {
+            case .success(let data):
+                let response:(String, [Places]) = self.apiInstance.parse(jsonData: data)
+                DispatchQueue.main.async {
+                    self.navigationController?.topViewController?.navigationItem.title = response.0
+                    self.placeList = response.1
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                }
+               
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
+        let indexItem = self.placeList[indexPath.row]
+        cell.indexImageView.image = UIImage(named: "no_image")
+        cell.nameLabel.text = indexItem.placeName
+        cell.detailedLabel.text = indexItem.placeDescription
+        cell.tag = indexPath.row
+        if let _ = indexItem.imageURL{
         
-//        let source = json.data(using: .utf8)!
-//        let myResponse = try! JSONDecoder().decode(Data.self, from: source)
-        
+        DispatchQueue.global(qos: .utility).async {
+            
+            URLSession.shared.dataTask(with: URL(string: indexItem.imageURL!)!) { (data, response, error) in
+                
+                if error != nil{
+                  DispatchQueue.main.async {
+                       cell.indexImageView.image = UIImage(named: "no_image")
+                   }
+                    return;
+                }
+                if (response as! HTTPURLResponse).statusCode == 404{
+                    DispatchQueue.main.async {
+                        cell.indexImageView.image = UIImage(named: "no_image")
+                    }
+                    return;
+                }
+                
+                DispatchQueue.main.async() { () -> Void in
+                    if cell.tag == indexPath.row{
+                        cell.indexImageView.image = UIImage(data: data!)
+                    }
+                }
+                }.resume()
+            
+        }
+        }
+        return cell
 
     }
-
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return  1
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.placeList.count
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+            return UITableView.automaticDimension
+         
+    }
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+         
+            return 200
+        
+    }
 }
 

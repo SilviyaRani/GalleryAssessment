@@ -10,5 +10,5 @@ import Foundation
 
 class Constants {
     
-    let dataURL:String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
+   static let dataURL:String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
 }
