@@ -15,19 +15,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let apiInstance = PlacesAPI()
     var placeList:[Places] = []
     
+    var timer: Timer!
+    var refreshBarButtonActivityIndicator: UIBarButtonItem!
+    var refreshBarButton: UIBarButtonItem!
      
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         safeArea = view.layoutMarginsGuide
+        setUpNavigation()
         setupTableView()
     }
     func setUpNavigation() {
-        navigationItem.title = "Navigation Bar"
-        self.navigationController?.navigationBar.barTintColor =  .red
+        barItemSetUp()
+        navigationItem.title = "Loading..."
+        self.navigationController?.navigationBar.barTintColor =  #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
         self.navigationController?.navigationBar.isTranslucent = false
-    
+        
     }
+    func barItemSetUp() {
+        
+        let image = UIImage(named: "refresh")?.withRenderingMode(.alwaysOriginal)
+        refreshBarButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(startRefreshButton))
+        
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView.init(style: .medium)
+        refreshBarButtonActivityIndicator = UIBarButtonItem(customView: activityIndicator)
+        activityIndicator.startAnimating()
+         
+    }
+    
     func setupTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,32 +56,64 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         tableView.dataSource = self
         tableView.delegate = self
+        self.startRefreshButton()
         self.getPlaces()
       }
     
-    
+    func resetRefreshButton(){
+        self.navigationItem.rightBarButtonItem = refreshBarButtonActivityIndicator
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
+            self.navigationItem.rightBarButtonItem = self.refreshBarButton
+        }
+    }
+   @objc private func startRefreshButton(){
+        self.navigationItem.rightBarButtonItem = refreshBarButtonActivityIndicator
+        getPlaces()
+    }
  
     func getPlaces(){
         
+        if Reachability.isConnectedToNetwork() == false{
+            // NO INTERNET
+           self.placeList =  DataBaseAccess.databaseDelegate.loadData()
+            self.navigationController?.topViewController?.navigationItem.title = UserDefaults.standard.value(forKey: "navigationTitle") as? String
+            self.tableView.reloadData()
+            self.resetRefreshButton()
+            return
+        }
 
         apiInstance.loadJson(fromURLString: Constants.dataURL) { (result) in
             switch result {
             case .success(let data):
                 let response:(String, [Places]) = self.apiInstance.parse(jsonData: data)
+                
                 DispatchQueue.main.async {
                     self.navigationController?.topViewController?.navigationItem.title = response.0
+                    UserDefaults.standard.setValue(response.0, forKey: "navigationTitle")
+                    UserDefaults.standard.synchronize()
                     self.placeList = response.1
+                    DataBaseAccess.databaseDelegate.saveData(list:self.placeList)
                     self.tableView.reloadData()
                     self.tableView.layoutIfNeeded()
+                    self.resetRefreshButton()
                 }
                
                 
             case .failure(let error):
                 print(error)
+                 
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+                self.resetRefreshButton()
             }
         }
     }
     
+    // MARK: - Core Data Saving support
+ 
+    
+    // MARK: - TableView Delegates
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
         let indexItem = self.placeList[indexPath.row]
@@ -85,7 +133,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                    }
                     return;
                 }
-                if (response as! HTTPURLResponse).statusCode == 404{
+                if (response as! HTTPURLResponse).statusCode != 200{
                     DispatchQueue.main.async {
                         cell.indexImageView.image = UIImage(named: "no_image")
                     }

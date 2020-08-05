@@ -29,8 +29,8 @@ class CustomTableViewCell : UITableViewCell{
     let nameLabel:UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor =  .white
-        label.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        label.textColor =  .black
+        label.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         label.layer.cornerRadius = 5
         label.clipsToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +41,7 @@ class CustomTableViewCell : UITableViewCell{
     
     let detailedLabel:UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor =  .black
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
