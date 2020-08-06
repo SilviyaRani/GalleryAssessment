@@ -8,14 +8,20 @@
 
 import Foundation
 import UIKit
-
+/*
+ 1. 3 Items Placed in TableView Cell
+ 2. Name Label with auto wrap, auto label height
+ 3. Below with 70*70 scaleaspectfit style imageview
+ 4. Description Label with auto wrap and auto label height
+ 5. Constraint setup done accordingly
+ */
 class CustomTableViewCell : UITableViewCell{
-    let containerView:UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.clipsToBounds = true // this will make sure its children do not go out of the boundary
-        return view
-    }()
+//    let containerView:UIView = {
+//        let view = UIView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        view.clipsToBounds = true // this will make sure its children do not go out of the boundary
+//        return view
+//    }()
     
     let indexImageView:UIImageView = {
         let img = UIImageView(image: UIImage(named: "no_image"))

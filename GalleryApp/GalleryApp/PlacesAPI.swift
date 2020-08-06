@@ -8,7 +8,16 @@
 
 import Foundation
 
-
+// MARK: - MVC Pattern Controller class
+/*
+ MainData - Head of read json feed structure. CodingKeys mentioned to read date
+ Rows - Array of json places with mentioned coding keys
+ ------
+ 1. public func loadJson(fromURLString urlString: String,...) : This function will send URLSession data request with the given JSON Feed url. Exception cases handled. Network check handled before invoking this method. On Success it will call parse method for JSONParsing
+ 2. parse(jsonData: Data)....: JSON Parser and return Places model type resultant data collections
+ 
+ ------
+ */
 struct MainData:Codable {
     let title:String
     let rows:[Rows]

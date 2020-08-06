@@ -8,7 +8,7 @@
 
 import Foundation
 import SystemConfiguration
-
+// MARK:- Rechability class to check network status with cellular data and WIFI
 public class Reachability {
 
     class func isConnectedToNetwork() -> Bool {

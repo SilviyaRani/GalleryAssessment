@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="PlaceEntity" representedClassName="PlaceEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="imagedata" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="imageurl" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="placedescription" optional="YES" attributeType="String"/>
         <attribute name="placename" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="PlaceEntity" positionX="-63" positionY="-18" width="128" height="88"/>
+        <element name="PlaceEntity" positionX="-63" positionY="-18" width="128" height="118"/>
     </elements>
 </model>
